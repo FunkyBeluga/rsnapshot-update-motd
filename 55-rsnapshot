@@ -1,17 +1,14 @@
 #!/bin/sh
 
-# A simple script to display some basic rsnapshot stats. If placed in /etc/update-motd.d/ on Ubuntu/Debian/etc. it will display the output upon login over ssh.
-
-lastDaily=$(ls -l /mnt/backup/rsnapshot/ | grep daily.0 | cut -d ' ' -f 6-8)
-lastWeekly=$(ls -l /mnt/backup/rsnapshot/ | grep weekly.0 | cut -d ' ' -f 6-8)
-lastMonthly=$(ls -l /mnt/backup/rsnapshot/ | grep monthly.0 | cut -d ' ' -f 6-8)
-lastCompleted=$(cat /var/log/rsnapshot.log | grep completed | tail -1 | cut -d ' ' -f 4-100 | fold -w 68 -s)
+lastDaily=$(ls -l /mnt/backup/rsnapshot/ | grep daily.0 | tr -s ' ' | cut -d ' ' -f 6-8)
+lastWeekly=$(ls -l /mnt/backup/rsnapshot/ | grep weekly.0 | tr -s ' ' | cut -d ' ' -f 6-8)
+lastMonthly=$(ls -l /mnt/backup/rsnapshot/ | grep monthly.0 | tr -s ' ' | cut -d ' ' -f 6-8)
+lastCompleted=$(cat /var/log/rsnapshot.log | grep completed | tail -1 | cut -d ' ' -f 4-100 | fold -w 46 -s)
 
 echo " "
-echo "-------------------------------------------------------------------"
+echo "----------------------------------------------"
 echo "LATEST RSNAPSHOT STATUS:"
 echo "$lastCompleted"
 echo " "
-echo "LATEST DAILY:            LATEST WEEKLY:            LATEST MONTHLY:"
-echo "$lastDaily             $lastWeekly              $lastMonthly"
-echo "-------------------------------------------------------------------"
+printf "LATEST DAILY:,LATEST WEEKLY:,LATEST MONTHLY:,\n$lastDaily,$lastWeekly,$lastMonthly\n" | column -t -s ','
+echo "----------------------------------------------"
